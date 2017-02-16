@@ -28,4 +28,13 @@ The `test.sh` script will be run for every incoming message with the following e
 | SUBJECT | The e-mail subject line |
 | CONNECTION | The ini section name of the mailbox that received the message |
 
-The whole e-mail message in RFC822 format will be send to the standard input of the executable
+The whole e-mail message in RFC822 format will be send to the standard input of the executable and as filename as first
+argument.
+
+Example executable:
+
+```bash
+#!/usr/bin/env bash
+
+curl -X POST -F "from=$FROM" -F "to=$TO" -F "subject=$SUBJECT" -F "email=@$1;filename=email.eml" http://127.0.0.1:8000/email/upload
+```

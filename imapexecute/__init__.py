@@ -48,7 +48,8 @@ def handle_message(connection_name, raw):
     mailfile = open(mailfile[1], 'w+b')
     mailfile.write(mail.as_bytes(unixfrom=True))
 
-    subprocess.Popen(config.get(connection_name, 'execute'), shell=True, stdin=mailfile, stdout=None, stderr=None,
+    subprocess.Popen(config.get(connection_name, 'execute') + ' "' + mailfile.name + '"', shell=True, stdin=mailfile,
+                     stdout=None, stderr=None,
                      close_fds=True, env=environment)
 
 
