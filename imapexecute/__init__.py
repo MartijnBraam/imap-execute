@@ -30,6 +30,9 @@ def start_connection(name, config):
 def handle_message(connection_name, raw):
     global config
 
+    if raw[0] is None:
+        return
+
     print('New message for account [{}]'.format(connection_name))
     mail = email.message_from_bytes(raw[0][1])
 
@@ -42,6 +45,7 @@ def handle_message(connection_name, raw):
     }
 
     mailfile = tempfile.mkstemp(prefix='imap-execute-')
+    mailfile = open(mailfile[1], 'w+b')
     mailfile.write(mail.as_bytes(unixfrom=True))
 
     subprocess.Popen(config.get(connection_name, 'execute'), shell=True, stdin=mailfile, stdout=None, stderr=None,

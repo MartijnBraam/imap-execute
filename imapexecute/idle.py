@@ -15,7 +15,8 @@ def start_idle(connection):
 def get_event(connection):
     resp = connection.readline().decode()
     print(resp)
-    uid, message = resp[2:-2].split(' ')
+    part = resp[2:].split('(', maxsplit=1)
+    uid, message = part[0].strip().split(' ')
     return uid, message
 
 
