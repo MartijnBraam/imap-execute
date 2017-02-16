@@ -33,7 +33,7 @@ def handle_message(connection_name, raw):
     if raw[0] is None:
         return
 
-    print('New message for account [{}]'.format(connection_name))
+    print('Executing action for account [{}]'.format(connection_name))
     mail = email.message_from_bytes(raw[0][1])
 
     environment = {
@@ -65,9 +65,11 @@ def loop():
             uid, message = connection.get_event()
             if message == 'EXISTS':
                 connection.done()
+                print('Fetching message {} for account [{}]'.format(uid, connection_name))
                 status, datas = connection.fetch(uid, '(RFC822)')
                 handle_message(connection_name, datas)
                 connection.start_idle()
+                print('Restarted idle')
 
 
 if __name__ == '__main__':

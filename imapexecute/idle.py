@@ -24,7 +24,7 @@ def done(connection):
     connection.send("DONE\r\n".encode())
     while True:
         resp = connection.readline()
-        if resp[0] != b'*':
+        if len(resp) > 0 and resp[0] != b'*':
             break
 
 
