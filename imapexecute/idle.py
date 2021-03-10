@@ -16,9 +16,15 @@ def get_event(connection):
     resp = connection.readline().decode()
     print(resp)
     part = resp[2:].split('(', maxsplit=1)
-    uid, message = part[0].strip().split(' ')
-    return uid, message
+    part = part[0].strip()
 
+    parts = part.split(' ')
+    # for any part that are not in the format '<uid> <message>',
+    # just return the part
+    if len(parts) > 2:
+        return None, part
+    uid, message = parts
+    return uid, message
 
 def done(connection):
     connection.send("DONE\r\n".encode())
