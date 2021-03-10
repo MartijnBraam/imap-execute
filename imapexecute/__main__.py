@@ -4,6 +4,7 @@ from imapexecute.idle import imaplib
 import email
 import select
 import subprocess
+import sys
 import tempfile
 
 connections = {}
@@ -19,7 +20,25 @@ def start_connection(name, config):
     else:
         connections[name] = imaplib.IMAP4(config['host'], port=int(config['port']))
 
-    connections[name].login(config['username'], config['password'])
+    password = None
+    if config.get('password'):
+        password = config['password']
+    else:
+        if config.get('password_cmd'):
+            p = subprocess.Popen(config['password_cmd'].split(),
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, close_fds=True)
+            out, err = p.communicate()
+            if p.returncode:
+                print(f"Error running password cmd: {err}")
+                sys.exit(1)
+            password = out.decode().rstrip()
+
+    if not password:
+        print("Error: no password or password_cmd in config")
+        sys.exit(1)
+
+    connections[name].login(config['username'], password)
     connections[name].select()
     connections[name].start_idle()
     socket = connections[name].socket()
