@@ -2,6 +2,7 @@ import argparse
 import configparser
 from imapexecute.idle import imaplib
 import email
+import os
 import select
 import subprocess
 import tempfile
@@ -36,13 +37,14 @@ def handle_message(connection_name, raw):
     print('Executing action for account [{}]'.format(connection_name))
     mail = email.message_from_bytes(raw[0][1])
 
-    environment = {
+    environment = os.environ
+    environment.update({
         'SUBJECT': mail.get('Subject'),
         'FROM': mail.get('From'),
         'DATE': mail.get('Date'),
         'TO': mail.get('To'),
         'CONNECTION': connection_name
-    }
+    })
 
     mailfile = tempfile.mkstemp(prefix='imap-execute-')
     mailfile = open(mailfile[1], 'w+b')
