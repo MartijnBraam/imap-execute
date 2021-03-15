@@ -74,6 +74,8 @@ def loop():
             connection_name = sock.name
             connection = connections[connection_name]
             uid, message = connection.get_event()
+            if not uid:
+                continue
             if message == 'EXISTS':
                 connection.done()
                 print('Fetching message {} for account [{}]'.format(uid, connection_name))
