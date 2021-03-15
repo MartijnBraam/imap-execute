@@ -13,10 +13,15 @@ host=imap.gmail.com
 port=993
 username=my.email.address@gmail.com
 password=secret
+password_cmd=gpg -d ~/passwords/email
 ssl=True
 
 execute=/opt/test.sh
 ```
+
+A command to fetch the password can be specified with `password_cmd=`, so that
+the password does not need to be put into the config in plain text. The
+external command should output the password on a single line over stdout.
 
 The `test.sh` script will be run for every incoming message with the following environment variables set:
 
